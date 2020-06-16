@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Renombrar archivo</title>
+    <link rel="stylesheet" href="./styles/normalize.css" />
+    <link rel="stylesheet" href="./styles/scale.css" />
+    <link rel="stylesheet" href="./styles/index.css" />
+  </head>
+  <body>
+    <main>
+      <h1 class="title">Productos a organizar</h1>
+      <div id="thumbnails">
+        <span>Selecciona la foto de la portada haciendo click</span>
+        <div id="thumbnails-container"></div>
+      </div>
+      <form id="form">
+        <input
+          id="ref-input"
+          type="text"
+          name="reference"
+          placeholder="Ingrese el código de referencia del producto"
+          oninput="this.value = this.value.toUpperCase()"
+          autofocus
+        />
+        <button type="submit">Guardar</button>
+        <span id="message"></span>
+      </form>
+      <footer>
+        Desarrollado por Woldev
+      </footer>
+    </main>
+
+    <script src="./utils/popper.js"></script>
+    <script src="./utils/tippy.js"></script>
+    <script>
+      //Referencias al DOM
+      var thumbnails = document.getElementById("thumbnails");
+      var thumbnails_tippy;
+      var thumbContainer = document.getElementById("thumbnails-container");
+      var referenceForm = document.getElementById("form");
+      var referenceInput = document.getElementById("ref-input");
+      var referenceInput_tippy;
+
+      var coverPhoto;
+
+      window.api.send("page-ready");
+
+      window.api.receive("file-list", (data) => {
+        data.map((file, index) => {
+          let imgContainer = document.createElement("figure");
+          imgContainer.setAttribute("data-tippy-content", file);
+          let img = document.createElement("img");
+          img.src = file;
+          imgContainer.appendChild(img);
+          thumbContainer.appendChild(imgContainer);
+          tippy(imgContainer, {
+            placement: "bottom",
+            hideOnClick: false,
+          });
+        });
+      });
+
+      function setCoverPhoto(e) {
+        if (coverPhoto) {
+          coverPhoto.classList.toggle("active");
+        } else {
+          //Eliminamos el mensaje de alerta
+          if (thumbnails_tippy) {
+            thumbnails_tippy.destroy();
+          }
+        }
+        let photo = e.target;
+        if (photo === coverPhoto) {
+          coverPhoto = undefined;
+        } else {
+          photo.classList.toggle("active");
+          coverPhoto = photo;
+        }
+      }
+
+      function showMessage(text) {
+        let msgEl = document.getElementById("message");
+        let info = document.createTextNode(text);
+        msgEl.appendChild(info);
+        msgEl.classList.toggle("active");
+      }
+
+      function isValidRef(text) {
+        regExp = /^[a-zA-Z\d-#]*$/;
+        return regExp.test(text);
+      }
+
+      document
+        .getElementById("thumbnails")
+        .addEventListener("click", setCoverPhoto);
+
+      referenceForm.onsubmit = (e) => {
+        e.preventDefault();
+        let productRef = referenceForm.elements["reference"].value;
+        //console.log("Vamos a enviar",productRef);
+        if (productRef != "") {
+          if (coverPhoto) {
+            let data = {
+              ref: productRef,
+              thumbnail: coverPhoto.firstElementChild.src.replace(
+                "file:///",
+                ""
+              ),
+            };
+            // console.log("Vamos a mandar ", data);
+            window.api.send("organize-files", data);
+          } else {
+            thumbnails_tippy = tippy(thumbnails, {
+              content: "Seleccione una foto de portada",
+              showOnCreate: true,
+              placement: "bottom",
+            });
+          }
+        } else {
+          referenceInput_tippy = tippy(referenceInput, {
+            content: "Escriba la referencia del producto",
+            showOnCreate: true,
+            placement: "top",
+          });
+        }
+      };
+
+      referenceInput.onkeypress = function (e) {
+        // console.log(event);
+        if (e.charCode != 13) {
+          let key = String.fromCharCode(
+            !event.charCode ? event.which : event.charCode
+          );
+          if (!isValidRef(key)) {
+            event.preventDefault();
+            return false;
+          }
+        }
+      };
+
+      window.api.receive("event-reply", (data) => {
+        if (data.ok) {
+          showMessage("Producto actualizado");
+
+          setTimeout(() => {
+            window.api.send("close-app");
+          }, 1000);
+        }
+      });
+    </script>
+  </body>
+</html>

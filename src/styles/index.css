@@ -1,0 +1,151 @@
+html {
+  height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  text-align: center;
+  padding: 0px 72px;
+  height: 100%;
+}
+
+main {
+  display: grid;
+  grid-template-rows: 90px 100px 1fr 50px;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.files-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.files-container li.files-item {
+  box-sizing: border-box;
+  list-style-type: none;
+  background-color: #5a5a5a;
+  padding: 0.5em 1em;
+  border-radius: 1.5em;
+}
+
+.title {
+  grid-row: 1 / 2;
+  align-self: center;
+}
+
+#form {
+  grid-row: 3 / 4;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+footer {
+  grid-row: 4 / 5;
+  font-size: 0.8em;
+}
+
+#form input {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  height: 2.3em;
+  border: none;
+  background-color: #f7f7f7;
+  text-align: center;
+  border-radius: 1.5em;
+  margin: 1em;
+  width: 400px;
+}
+
+#form input:focus,
+#form textarea:focus,
+#form select:focus {
+  outline: none;
+}
+
+#form button {
+  border: none;
+  margin: 1em;
+  width: 250px;
+  height: 2em;
+  border-radius: 1.5em;
+  color: white;
+  background-color: #1671d8;
+  overflow: hidden;
+}
+
+#form button:hover {
+  background-color: #4091d6;
+}
+
+@keyframes send-data {
+  0% {
+    line-height: 1em;
+  }
+  100% {
+    line-height: 2.5em;
+  }
+}
+
+#message {
+  display: none;
+}
+
+#message.active {
+  margin-top: 1em;
+  display: block;
+  color: #2cae24;
+}
+
+#thumbnails span {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+#thumbnails {
+  grid-row: 2 / 3;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#thumbnails span {
+  width: 100%;
+}
+
+#thumbnails-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 50%;
+}
+
+#thumbnails figure {
+  margin: 0 10px;
+  height: 100%;
+  border: 0px solid #0079bb;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-width 0.3s ease;
+  box-sizing: border-box;
+}
+
+#thumbnails figure.active {
+  border-width: 3px;
+}
+
+#thumbnails figure img {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+  pointer-events: none;
+}
