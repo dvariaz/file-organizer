@@ -86,7 +86,7 @@ const renameFiles = (files, ref) => {
     files.map((oldFile, index) => {
       fs.rename(oldFile, newFileNames[index], (err) => {
         if (err) throw err;
-        //Almacenamos una copia de los nombres, en caso de que ocurra un error y toque volver
+        //Almacenamos una copia de los nombres, en caso de que ocurra un error y toque volver a la normalidad
         let backup = {
           oldFn: oldFile,
           newFn: newFileNames[index],
@@ -101,7 +101,11 @@ const renameFiles = (files, ref) => {
     });
   } catch (err) {
     console.log("Ocurrió un error renombrando los archivos: ".red, err);
-    filenamesBackup.map();
+    filenamesBackup.map((backup) => {
+      fs.rename(backup.newFn, backup.oldFn, (err) => {
+        console.log("Ocurrió un error restaurando la copia de seguridad");
+      });
+    });
   }
 };
 
