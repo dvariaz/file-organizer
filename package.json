@@ -52,7 +52,7 @@
     "electron-image-resize": "^1.2.4",
     "electron-squirrel-startup": "^1.0.0",
     "readdir-absolute": "^1.0.1",
-    "sharp": "^0.25.3"
+    "sharp": "^0.30.5"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.51",
